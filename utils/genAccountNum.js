@@ -6,3 +6,4 @@ function genAccNum(){
 };
 
 module.exports = {genAccNum};
+

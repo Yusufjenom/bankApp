@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     },
     accountNum:{
         type: Number,
+        unique: true
     },
     suspended:{
         type: Boolean,
