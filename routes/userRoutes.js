@@ -1,5 +1,15 @@
 const userRouter = require('express').Router();
-const {signupUser, loginUser, loginForm,signupForm, homePage, logoutUser } = require('../controller/userController');
+const {signupUser,
+     loginUser,
+     loginForm,
+     signupForm,
+      homePage,
+       logoutUser,
+       displayUpdatePasswordEmail,
+       submitEmailForPasswordUpdate,
+       getUpdatePassword,
+       postUpdatedPassword
+     } = require('../controller/userController');
 const {verifyUser} = require('../middleware/authUser');
 
 //SIGN UP A USER
@@ -14,6 +24,14 @@ userRouter.get('/signup-user', signupForm);
 userRouter.get('/home', verifyUser,  homePage);
 
 userRouter.get('/logout-user', logoutUser);
+
+userRouter.get('/submit-email', displayUpdatePasswordEmail);
+
+userRouter.post('/submitted', submitEmailForPasswordUpdate);
+
+userRouter.get('/update-password/:id/:token', getUpdatePassword);
+
+userRouter.put('/update-password/:id/:token', postUpdatedPassword);
 
 
 

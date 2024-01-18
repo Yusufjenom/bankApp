@@ -2,48 +2,34 @@ const { UserModel } = require('../model/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { genAccNum } = require('../utils/genAccountNum');
-const {errorHandler}  = require('../utils/handleError');
+const {CatchErrorFunc} = require('../utils/CatchErrorFunc');
+const {HandleError} = require('../utils/error');
+const {sendMail} = require('../utils/sendMail');
 
 const period = 60 * 60 * 24;
 //SIGN UP A USER
-const loginForm = async (req, res) => {
-    try{
+const loginForm = CatchErrorFunc(async (req, res) => {
        res.status(200).render('loginUser');
-    }
-    catch(err){
-        console.log(err.message)
-    }
-}
+})
 
-const signupForm = async (req, res) => {
-    try{
+const signupForm = CatchErrorFunc(async (req, res) => {
        res.status(200).render('signupUser');
-    }
-    catch(err){
-        console.log(err.message)
-    }
-}
+})
 
-const homePage = async (req, res) => {
-    try{
+const homePage = CatchErrorFunc(async (req, res) => {
        res.status(200).render('home');
-    }
-    catch(err){
-        console.log(err.message)
-    }
 }
+)
 
 
-
-const signupUser = async (req, res) => {
-    try {
+const signupUser = CatchErrorFunc(async (req, res) => {
+   
         const { firstname, lastname, email, password, address, tel } = req.body;
         const userExist = await UserModel.findOne({ email });
         if (userExist) {
-            throw new Error('user with this email already exist')
+            throw new HandleError(400,'user with this email already exist', 400)
         }
         
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -62,21 +48,10 @@ const signupUser = async (req, res) => {
             success: true,
             savedUser
         });
-
-    }
-    catch (err) {
-        console.log(err.message)
-        res.status(400).json({
-            success: false,
-            msg: err.message
-        })
-
-    }
-};
+})
 
 
-const loginUser = async (req, res) => {
-    try{
+const loginUser = CatchErrorFunc(async (req, res) => {
      const {email, password} = req.body;
      const user = await UserModel.findOne({email});
      if(user){
@@ -86,8 +61,14 @@ const loginUser = async (req, res) => {
           await jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: period},
             async (err, token) => {
                 if(err){
-                    throw new Error(err.message)
+                    throw new HandleError(400, err.message, 400)
                 }
+                let text = `<h1>User Logged Into Cohort 3 Bank Application</h1>
+                 <p> Hello ${user.firstname}, you have just logged into your account,
+                 if you did not authorize this login kindly report to our support team
+                 </p>
+                 `
+                await sendMail(user.email, "Successful Login", text);
                 res.cookie('userToken', token, {maxAge: 1000 * period, httpOnly: true})
                 res.status(200).json({
                     success: true,
@@ -97,34 +78,75 @@ const loginUser = async (req, res) => {
             })
        }
        else{
-        throw new Error('invalid password')
+        throw new HandleError(process.env.WRONG_PASSWORD, 'invalid password', 400)
        }
      }
      else{
-        throw new Error('invalid email')
+        throw new HandleError(400, 'invalid email', 400)
      }
-     
-    }
-    catch(err){
-        console.log(err.message)
-        let error = errorHandler(err)
-        res.status(400).json({
-            success: false,
-             error
-        })
-    }
-};
+})
  
 
-const logoutUser = async (req, res) => {
-    try{
+const logoutUser = CatchErrorFunc(async (req, res) => {
       res.cookie('userToken', "", {maxAge: 0});
       res.redirect('/api/v1/login-user');
-    }
-    catch(err){
-        console.log(err.message)
-    }
-}
+})
 
 
-module.exports = { signupUser, loginUser, loginForm, signupForm, homePage, logoutUser };
+const displayUpdatePasswordEmail = CatchErrorFunc(async (req, res) => {
+    res.status(200).render('resetPasswordEmail');
+});
+
+const submitEmailForPasswordUpdate = CatchErrorFunc(async (req, res) => {
+    const {email} = req.body;
+    const user = await UserModel.findOne({email})
+    if(!user){
+        throw new HandleError(400, "user not found", 400)
+    }
+    await jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: 60 * 5}, 
+        async (err, token) => {
+            if(err){
+                throw new HandleError(400, err.message, 400)
+            }
+            let text = `http://localhost:5000/api/v1/update-password/${user._id}/${token}`
+            //console.log(text)
+            await sendMail(user.email, "Reset Password Link", text);
+        });
+   
+});
+
+const getUpdatePassword = CatchErrorFunc(async (req, res) => {
+    const {id, token} = req.params;
+    res.status(200).render('updatePassword', {id, token});
+});
+
+const postUpdatedPassword = CatchErrorFunc(async (req, res) => {
+    const {id, token } = req.params;
+    const {password} = req.body;
+    console.log(password, id, token);
+    
+    await jwt.verify(token, process.env.JWT_SECRET, async (err, verifiedToken) => {
+        if(err){
+            throw new HandleError(400, err.message, 400)
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt)
+        const updatedPassword = await UserModel.findOneAndUpdate({_id: id}, {
+            password: hashedPassword
+        });
+        
+        res.status(202).redirect('/api/v1/login-user');
+    })
+});
+
+module.exports = { signupUser,
+                    loginUser,
+                    loginForm,
+                    signupForm,
+                        homePage,
+                        logoutUser,
+                        displayUpdatePasswordEmail,
+                        submitEmailForPasswordUpdate,
+                        getUpdatePassword,
+                        postUpdatedPassword
+                     };
