@@ -36,8 +36,19 @@ const userSchema = new mongoose.Schema({
     accountBalance:{
         type: Number,
         default: 0
+    },
+    pin:{
+        type: Number,
+        default: "0000"
+    },
+    transactionHistory: {
+        type: Array,
+        default: []
+    },
+    beneficiary:{
+        type: [Object]
     }
-});
+}, {timestamps: true});
 
 const UserModel = mongoose.model('user', userSchema);
 

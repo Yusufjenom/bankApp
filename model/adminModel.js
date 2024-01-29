@@ -13,8 +13,12 @@ const adminSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    pin:{
+        type: Number,
+        default: "0000"
     }
-});
+}, {timestamps: true});
 
 
 const AdminModel = mongoose.model('admin', adminSchema);

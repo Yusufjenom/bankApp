@@ -4,8 +4,11 @@ const { sendMail } = require('../utils/sendMail');
 const { CatchErrorFunc } = require('../utils/CatchErrorFunc');
 const { AdminModel } = require('../model/adminModel');
 const { HandleError } = require('../utils/error');
+const { UserModel } = require('../model/userModel');
+
 
 const period = 60 * 60 * 24;
+
 const signUpAdmin = CatchErrorFunc(async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -37,19 +40,58 @@ const loginAdmin = CatchErrorFunc(async (req, res) => {
                         user
                     })
                 })
-        }else{
+        } else {
             throw new HandleError(400, "invalid password", 404)
         }
-       
-    }else{
-        throw new HandleError(400, "invalid email", 404)
-    }
 
+    } else {
+        throw new HandleError(400, "invalid email", 404)
+    };
+});
+
+const createTransactionPin = CatchErrorFunc(async (req, res) => {
+    const { pin } = req.body
+    const adminToken = req.cookies.adminToken;
+    const verifiedToken = jwt.verify(adminToken, process.env.JWT_SECRET);
    
+    const admin = await AdminModel.findByIdAndUpdate(verifiedToken.id, {
+        pin
+    })
+    res.status(200).json({
+        success: true,
+        admin
+    })
+});
+
+const Credit = CatchErrorFunc(async (req, res) => {
+    const { accountNum, amount, pin } = req.body;
+    console.log(pin)
+    const adminToken = req.cookies.adminToken
+    const verifiedToken = await jwt.verify(adminToken, process.env.JWT_SECRET);
+   
+    const admin = await AdminModel.findById(verifiedToken.id);
+    console.log(admin.pin)
+    if (admin.pin === Number(pin)) {
+        const userToCredit = await UserModel.findOne({ accountNum });
+        const finalBalance = Number(userToCredit.accountBalance) + Number(amount);
+        const updatedUserBalance = await UserModel.findOneAndUpdate({ accountNum }, {
+            accountBalance: finalBalance
+        })
+
+        res.status(200).json({
+            success: true,
+            updatedUserBalance
+        })
+    }else{
+        throw new Error(400, "wrong pin", 400)
+    };
+
 });
 
 
 module.exports = {
     signUpAdmin,
-    loginAdmin
+    loginAdmin,
+    Credit,
+    createTransactionPin
 }
