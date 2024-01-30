@@ -5,13 +5,13 @@ const { CatchErrorFunc } = require('../utils/CatchErrorFunc');
 const { AdminModel } = require('../model/adminModel');
 const { HandleError } = require('../utils/error');
 const { UserModel } = require('../model/userModel');
+const { getCurrentAdmin } = require('../utils/getCurrentAdmin');
 
 
 const period = 60 * 60 * 24;
 
 const signUpAdmin = CatchErrorFunc(async (req, res) => {
     const { name, email, password } = req.body;
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt)
     const newAdmin = AdminModel.create({ name, email, password: hashedPassword });
@@ -51,10 +51,8 @@ const loginAdmin = CatchErrorFunc(async (req, res) => {
 
 const createTransactionPin = CatchErrorFunc(async (req, res) => {
     const { pin } = req.body
-    const adminToken = req.cookies.adminToken;
-    const verifiedToken = jwt.verify(adminToken, process.env.JWT_SECRET);
-   
-    const admin = await AdminModel.findByIdAndUpdate(verifiedToken.id, {
+    const id = await getCurrentAdmin(req)
+    const admin = await AdminModel.findByIdAndUpdate(id, {
         pin
     })
     res.status(200).json({
@@ -66,10 +64,8 @@ const createTransactionPin = CatchErrorFunc(async (req, res) => {
 const Credit = CatchErrorFunc(async (req, res) => {
     const { accountNum, amount, pin } = req.body;
     console.log(pin)
-    const adminToken = req.cookies.adminToken
-    const verifiedToken = await jwt.verify(adminToken, process.env.JWT_SECRET);
-   
-    const admin = await AdminModel.findById(verifiedToken.id);
+    const id = await getCurrentAdmin(req)
+    const admin = await AdminModel.findById(id);
     console.log(admin.pin)
     if (admin.pin === Number(pin)) {
         const userToCredit = await UserModel.findOne({ accountNum });
