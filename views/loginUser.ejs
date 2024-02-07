@@ -51,7 +51,10 @@
                         response.json()
                             .then(data => {
                                 if (data.success) {
-                                    window.location.assign('/api/v1/home')
+                                    (async function(){
+                                      await  window.location.assign('/api/v1/home')
+                                    })()
+                                    
                                 }
 
                                 if(!data.success){

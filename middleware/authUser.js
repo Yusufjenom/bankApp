@@ -6,8 +6,10 @@ async function verifyUser(req, res, next){
       await jwt.verify(token, process.env.JWT_SECRET, (err, verifiedToken) => {
         if(verifiedToken){
             next()
+        }else{
+          res.redirect('/api/v1/login-user')
         }
-        res.redirect('/api/v1/login-user')
+        
       })
   }
   catch(err){

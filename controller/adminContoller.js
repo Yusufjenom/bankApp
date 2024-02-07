@@ -84,10 +84,39 @@ const Credit = CatchErrorFunc(async (req, res) => {
 
 });
 
+const suspendUser = CatchErrorFunc(async (req, res) => {
+    const {accountNum} = req.body;
+    const user = await UserModel.findOneAndUpdate({accountNum}, {
+        suspended: true
+    });
+    if(!user){
+        throw new HandleError(400, "user not found", 400)
+    }
+    res.status(200).json({
+        success: true,
+        message: `${user.firstname} has been suspended successfully`
+    })
+});
+
+const unBlockUserAcc = CatchErrorFunc(async (req, res) => {
+    const {accountNum} = req.body;
+    const user = await UserModel.findOneAndUpdate({accountNum}, {
+        suspended: false
+    })
+    if(!user){
+        throw new HandleError(400, "user not found", 400)
+    }
+    res.status(200).json({
+        success: true,
+        message: `${user.firstname} ${user.lastname} account has been unblocked successfully`
+    })
+})
 
 module.exports = {
     signUpAdmin,
     loginAdmin,
     Credit,
-    createTransactionPin
+    createTransactionPin,
+    suspendUser,
+    unBlockUserAcc
 }

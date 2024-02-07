@@ -6,6 +6,8 @@ const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const {ErrorHandler} = require('./middleware/ErrorHandler');
 const methodOverride = require('method-override');
+const session = require('express-session');
+const memoryStore = require('memorystore')(session);
 
 const app = express();
 
@@ -20,6 +22,16 @@ app.use(express.static('public'));
 app.use(methodOverride('_method'));
 app.use('/api/v1', userRouter);
 app.use('/api/v2', adminRouter);
+
+
+app.use(session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+    store: new memoryStore({
+        checkPeriod: 86400000
+    })
+}));
 
 //Error handler middleware has to be the last middleware on your stack
 app.use(ErrorHandler);

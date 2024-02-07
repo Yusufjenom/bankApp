@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-        required: true
+        required: [true, "please enter a password"]
     },
     address:{
         type: String,
@@ -47,6 +47,9 @@ const userSchema = new mongoose.Schema({
     },
     beneficiary:{
         type: [Object]
+    },
+    accountType:{
+        type: String
     }
 }, {timestamps: true});
 

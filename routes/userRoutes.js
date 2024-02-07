@@ -11,7 +11,8 @@ const {signupUser,
        postUpdatedPassword,
        creditCustomer,
        generatePin,
-       resetPin
+       resetPin,
+       getTransferForm
      } = require('../controller/userController');
 const {verifyUser} = require('../middleware/authUser');
 
@@ -24,10 +25,6 @@ userRouter.get('/login-user', loginForm);
 
 userRouter.get('/signup-user', signupForm);
 
-userRouter.get('/home', verifyUser,  homePage);
-
-userRouter.get('/logout-user', logoutUser);
-
 userRouter.get('/submit-email', displayUpdatePasswordEmail);
 
 userRouter.post('/submitted', submitEmailForPasswordUpdate);
@@ -36,11 +33,18 @@ userRouter.get('/update-password/:id/:token', getUpdatePassword);
 
 userRouter.put('/update-password/:id/:token', postUpdatedPassword);
 
+userRouter.use(verifyUser);
+
+userRouter.get('/home',  homePage);
+
+userRouter.get('/logout-user', logoutUser);
+
 userRouter.put('/credit-customer',  creditCustomer);
-// 5346871920
 
 userRouter.put('/set-pin', generatePin);
 
 userRouter.put('/reset-pin', resetPin);
+
+userRouter.get('/transfer', getTransferForm);
 
 module.exports = userRouter;

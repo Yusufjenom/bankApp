@@ -5,6 +5,7 @@ const { genAccNum } = require('../utils/genAccountNum');
 const { CatchErrorFunc } = require('../utils/CatchErrorFunc');
 const { HandleError } = require('../utils/error');
 const { sendMail } = require('../utils/sendMail');
+const { getCurrentUser } = require('../utils/getCurrentUser');
 
 const period = 60 * 60 * 24;
 //SIGN UP A USER
@@ -17,9 +18,16 @@ const signupForm = CatchErrorFunc(async (req, res) => {
 })
 
 const homePage = CatchErrorFunc(async (req, res) => {
-    res.status(200).render('home');
+    const userId = await getCurrentUser(req);
+    const user = await UserModel.findById(userId);
+    console.log(user)
+    res.status(200).render('home', {user});
 }
-)
+);
+
+const getTransferForm = CatchErrorFunc(async (req, res) => {
+    res.status(200).render('transfer');
+})
 
 
 const signupUser = CatchErrorFunc(async (req, res) => {
@@ -58,24 +66,25 @@ const loginUser = CatchErrorFunc(async (req, res) => {
         const correctPassword = await bcrypt.compare(password, user.password);
 
         if (correctPassword) {
-            await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: period },
-                async (err, token) => {
-                    if (err) {
-                        throw new HandleError(400, err.message, 400)
-                    }
-                    let text = `<h1>User Logged Into Cohort 3 Bank Application</h1>
-                 <p> Hello ${user.firstname}, you have just logged into your account,
-                 if you did not authorize this login kindly report to our support team
-                 </p>
-                 `
-                    await sendMail(user.email, "Successful Login", text);
-                    res.cookie('userToken', token, { maxAge: 1000 * period, httpOnly: true })
-                    res.status(200).json({
-                        success: true,
-                        user,
+            const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: period })
+             if (token) {
+                let text = `<h1>User Logged Into Cohort 3 Bank Application</h1>
+                       <p> Hello ${user.firstname}, you have just logged into your account,
+                       if you did not authorize this login kindly report to our support team
+                        </p>
+                       `
+                await sendMail(user.email, "Successful Login", text);
+                res.cookie('userToken', token, { maxAge: 1000 * period, httpOnly: true })
+                 res.status(200).json({
+                    success: true,
+                    user,
 
-                    })
                 })
+            } else {
+                throw new HandleError(400, "invalid token", 400)
+            }
+
+
         }
         else {
             throw new HandleError(process.env.WRONG_PASSWORD, 'invalid password', 400)
@@ -140,11 +149,10 @@ const postUpdatedPassword = CatchErrorFunc(async (req, res) => {
 });
 
 const generatePin = CatchErrorFunc(async (req, res) => {
-    const {pin} = req.body;
-    const userToken = req.cookies.userToken;
-    const verifiedToken = await jwt.verify(userToken, process.env.JWT_SECRET);
-    const user = await UserModel.findByIdAndUpdate(verifiedToken.id, {
-        pin 
+    const { pin } = req.body;
+    const userId = await getCurrentUser(req)
+    const user = await UserModel.findByIdAndUpdate(userId, {
+        pin
     })
     res.status(200).json({
         success: true,
@@ -154,11 +162,12 @@ const generatePin = CatchErrorFunc(async (req, res) => {
 
 const creditCustomer = CatchErrorFunc(async (req, res) => {
     const { amount, accountNum, pin } = req.body;
-    const userToken = req.cookies.userToken;
-    const verifiedToken = await jwt.verify(userToken, process.env.JWT_SECRET);
-    const user = await UserModel.findById(verifiedToken.id);
+    const userId = await getCurrentUser(req)
+    const user = await UserModel.findById(userId);
     const customerToCredit = await UserModel.findOne({ accountNum });
-      
+    if (user.suspended) {
+        throw new HandleError(process.env.ACC_SUSPENSION, "account marked for no debit, kindly contact customer support", 400)
+    }
     if (Number(pin) === Number(user.pin)) {
         if (customerToCredit) {
             //Crediting
@@ -171,24 +180,27 @@ const creditCustomer = CatchErrorFunc(async (req, res) => {
                 const updatedRecipientAccount = await UserModel.findOneAndUpdate({ accountNum }, {
                     accountBalance: newBalance
                 });
-                const updatedSenderAccount = await UserModel.findByIdAndUpdate(verifiedToken.id, {
+                const updatedSenderAccount = await UserModel.findByIdAndUpdate(userId, {
                     accountBalance: newSenderBalance
                 });
                 await UserModel.updateOne({ email: user.email }, {
                     beneficiary: { accountName: `${customerToCredit.firstname} ${customerToCredit.lastname}`, accountNum: customerToCredit.accountNum }
                 })
-                res.status(200).json({
-                    success: true,
-                    message: "Your transfer was successful",
-                    updatedSenderAccount
-                })
+
+
+                // res.status(200).json({
+                //     success: true,
+                //     message: "Your transfer was successful",
+                //     updatedSenderAccount
+                // })
+                res.redirect('/api/v1/home')
             } else {
                 throw new HandleError(400, "insuffient funds", 400)
             }
         } else {
             throw new HandleError(400, "account number does not exist", 400)
         }
-    }else{
+    } else {
         throw new HandleError(400, "incorrect pin", 400);
     }
 
@@ -196,22 +208,21 @@ const creditCustomer = CatchErrorFunc(async (req, res) => {
 
 
 const resetPin = CatchErrorFunc(async (req, res) => {
-    const {oldPin, newPin} = req.body;
-    const userToken = req.cookies.userToken;
-    const verifiedToken = await jwt.verify(userToken, process.env.JWT_SECRET);
-    const us = await UserModel.findById(verifiedToken.id);
-    if(Number(oldPin) === us.pin){
-        const user = await UserModel.findByIdAndUpdate(verifiedToken.id, {
-            pin : newPin
+    const { oldPin, newPin } = req.body;
+    const userId = await getCurrentUser(req)
+    const us = await UserModel.findById(userId);
+    if (Number(oldPin) === us.pin) {
+        const user = await UserModel.findByIdAndUpdate(userId, {
+            pin: newPin
         })
         res.status(200).json({
             success: true,
             message: "pin reset was successful"
         })
-    }else{
+    } else {
         throw new HandleError(400, "wrong pin try again", 400)
     }
-    
+
 })
 
 module.exports = {
@@ -227,5 +238,6 @@ module.exports = {
     postUpdatedPassword,
     creditCustomer,
     generatePin,
-    resetPin
+    resetPin,
+    getTransferForm
 };
