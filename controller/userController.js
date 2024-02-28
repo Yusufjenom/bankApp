@@ -161,6 +161,7 @@ const generatePin = CatchErrorFunc(async (req, res) => {
 });
 
 const creditCustomer = CatchErrorFunc(async (req, res) => {
+    console.log(req.body);
     const { amount, accountNum, pin } = req.body;
     const userId = await getCurrentUser(req)
     const user = await UserModel.findById(userId);
@@ -193,7 +194,7 @@ const creditCustomer = CatchErrorFunc(async (req, res) => {
                 //     message: "Your transfer was successful",
                 //     updatedSenderAccount
                 // })
-                res.redirect('/api/v1/home')
+                res.status(200).render('reciept.ejs', {amount, user, updatedRecipientAccount})
             } else {
                 throw new HandleError(400, "insuffient funds", 400)
             }
@@ -223,7 +224,23 @@ const resetPin = CatchErrorFunc(async (req, res) => {
         throw new HandleError(400, "wrong pin try again", 400)
     }
 
+});
+
+const comfirmUserToCredit = CatchErrorFunc(async (req, res) => {
+   const {accountNum, amount, pin} = req.body;
+   const userToCredit = await UserModel.findOne({accountNum});
+//    console.log(userToCredit);
+//    console.log(req.body);
+   if(userToCredit){
+     res.status(200).render("comfirmation", {amount, userToCredit});
+   }else{
+    throw new HandleError(400, "no user with this account", 400);
+   }
 })
+
+// const getSuccessReciept = CatchErrorFunc(async (req, res) => {
+//     res.status(200).render("comfirmation")
+// });
 
 module.exports = {
     signupUser,
@@ -239,5 +256,7 @@ module.exports = {
     creditCustomer,
     generatePin,
     resetPin,
-    getTransferForm
+    getTransferForm,
+    comfirmUserToCredit,
+    //getSuccessReciept
 };

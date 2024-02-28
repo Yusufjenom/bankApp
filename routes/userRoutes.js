@@ -12,7 +12,8 @@ const {signupUser,
        creditCustomer,
        generatePin,
        resetPin,
-       getTransferForm
+       getTransferForm,
+       comfirmUserToCredit
      } = require('../controller/userController');
 const {verifyUser} = require('../middleware/authUser');
 
@@ -46,5 +47,7 @@ userRouter.put('/set-pin', generatePin);
 userRouter.put('/reset-pin', resetPin);
 
 userRouter.get('/transfer', getTransferForm);
+
+userRouter.post('/comfirm', comfirmUserToCredit)
 
 module.exports = userRouter;

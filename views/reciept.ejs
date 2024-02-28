@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>Comfirmation</title>
+</head>
+
+<body>
+
+    <section class="login-container">
+        <div class="login-form">
+            <h1>Comfirm Transfer</h1>
+            <!-- <form action="/api/v1/credit-customer?_method=PUT" method="post"> -->
+                <h3>Name: <%=user.firstname%> <%=user.lastname%></h3>
+               <p>Account: <%=user.accountNum%></p>
+               <p>Amount:<%=amount%></p>
+               <p>Satus: <span style="color: greenyellow;">SUCCESSFUL</span></p>
+               <p>Date: <%=updatedRecipientAccount.updatedAt%></p>
+            <!-- </form> -->
+            
+        </div>
+    </section>
+
+    
+
+</body>
+
+</html>
