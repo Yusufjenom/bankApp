@@ -1,0 +1,79 @@
+import React from 'react';
+import { useReducer } from 'react';
+import useSignupUser from '../../hooks/useSignupUser';
+import {useNavigate} from 'react-router-dom';
+//firstname lastname email password address tel
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "FIRSTNAME":
+            return { ...state, firstname: action.payload }
+        case "LASTNAME":
+            return { ...state, lastname: action.payload }
+        case "EMAIL":
+            return { ...state, email: action.payload }
+        case "PASSWORD":
+            return { ...state, password: action.payload }
+        case "ADDRESS":
+            return { ...state, address: action.payload }
+        case "TELEPHONE":
+            return { ...state, tel: action.payload }
+        //  case "SUBMIT":
+        //     return {...state, }
+        default:
+            return new Error("invalid input")
+    }
+}
+
+
+function Signup() {
+    const [state, dispatch] = useReducer(reducer, {
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        address: "",
+        tel: ""
+    });
+    const navigate = useNavigate();
+
+  const { signUp, userResponse } = useSignupUser()
+
+    const submitForm = async (e) => {
+        e.preventDefault()
+        const res = await signUp(state)
+        console.log(res, "confirm");
+        if(res.status === 201){
+          navigate('/dashboard')
+        }
+    }
+    
+    return (
+        <div style={{ width: "100vw" }}>
+            <form onSubmit={submitForm} style={{ display: 'flex', flexDirection: "column", gap: ".6rem", width: "50%" }}>
+                <input type="text" placeholder='First Name'
+                    onChange={(e) => dispatch({ type: "FIRSTNAME", payload: e.target.value })} />
+                <br />
+                <input type="text" placeholder='Last Name'
+                    onChange={(e) => dispatch({ type: "LASTNAME", payload: e.target.value })} />
+                <br />
+                <input type="text" placeholder='Email'
+                    onChange={(e) => dispatch({ type: "EMAIL", payload: e.target.value })} />
+                <br />
+                <input type="text" placeholder='Pasword'
+                    onChange={(e) => dispatch({ type: "PASSWORD", payload: e.target.value })} />
+                <br />
+                <input type="text" placeholder='Address'
+                    onChange={(e) => dispatch({ type: "ADDRESS", payload: e.target.value })} />
+                <br />
+                <input type="text" placeholder='Telephone Number'
+                    onChange={(e) => dispatch({ type: "TELEPHONE", payload: e.target.value })} />
+                <br />
+                <input type="submit" value="SIGNUP" />
+            </form>
+            
+        </div>
+    )
+}
+
+export default Signup
