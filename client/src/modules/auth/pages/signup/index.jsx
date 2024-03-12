@@ -2,28 +2,10 @@ import React from 'react';
 import { useReducer } from 'react';
 import useSignupUser from '../../hooks/useSignupUser';
 import {useNavigate} from 'react-router-dom';
+import { reducer } from '../../utils';
 //firstname lastname email password address tel
 
-const reducer = (state, action) => {
-    switch (action.type) {
-        case "FIRSTNAME":
-            return { ...state, firstname: action.payload }
-        case "LASTNAME":
-            return { ...state, lastname: action.payload }
-        case "EMAIL":
-            return { ...state, email: action.payload }
-        case "PASSWORD":
-            return { ...state, password: action.payload }
-        case "ADDRESS":
-            return { ...state, address: action.payload }
-        case "TELEPHONE":
-            return { ...state, tel: action.payload }
-        //  case "SUBMIT":
-        //     return {...state, }
-        default:
-            return new Error("invalid input")
-    }
-}
+
 
 
 function Signup() {

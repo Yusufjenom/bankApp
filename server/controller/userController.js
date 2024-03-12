@@ -78,6 +78,7 @@ const loginUser = CatchErrorFunc(async (req, res) => {
                  res.status(200).json({
                     success: true,
                     user,
+                    token
 
                 })
             } else {
@@ -247,6 +248,11 @@ const comfirmUserToCredit = CatchErrorFunc(async (req, res) => {
 //     res.status(200).render("comfirmation")
 // });
 
+const getCurrentUserFromClientSide = CatchErrorFunc(async (req, res) => {
+    const payload = req.get('Authorization')
+    console.log(payload)
+})
+
 module.exports = {
     signupUser,
     loginUser,
@@ -263,5 +269,6 @@ module.exports = {
     resetPin,
     getTransferForm,
     comfirmUserToCredit,
+    getCurrentUserFromClientSide
     //getSuccessReciept
 };

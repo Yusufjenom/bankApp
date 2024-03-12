@@ -3,6 +3,7 @@ import LandingPage from './modules/pages/landingPage';
 import Dashboard from './modules/pages/dashboard';
 import GeneralErrorPage from './modules/pages/error';
 import Signup from './modules/auth/pages/signup';
+import LoginUser from './modules/auth/pages/login';
 
 
 export const router = createBrowserRouter([
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
     {
         path:"/signup",
         element:<Signup/>
+    },
+    {
+       path:"/login",
+       element:<LoginUser/>
     },
     {
         path:"*",
