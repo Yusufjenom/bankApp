@@ -161,7 +161,6 @@ const generatePin = CatchErrorFunc(async (req, res) => {
 });
 
 const creditCustomer = CatchErrorFunc(async (req, res) => {
-    console.log(req.body);
     const { amount, accountNum, pin } = req.body;
     const userId = await getCurrentUser(req)
     const user = await UserModel.findById(userId);
@@ -184,9 +183,15 @@ const creditCustomer = CatchErrorFunc(async (req, res) => {
                 const updatedSenderAccount = await UserModel.findByIdAndUpdate(userId, {
                     accountBalance: newSenderBalance
                 });
-                await UserModel.updateOne({ email: user.email }, {
-                    beneficiary: { accountName: `${customerToCredit.firstname} ${customerToCredit.lastname}`, accountNum: customerToCredit.accountNum }
-                })
+                // await UserModel.updateOne({ email: user.email }, {
+                //     beneficiary: { accountName: `${customerToCredit.firstname} ${customerToCredit.lastname}`, accountNum: customerToCredit.accountNum }
+                // });
+                user.beneficiary.push({
+                    accountName: `${customerToCredit.firstname} ${customerToCredit.lastname}`,
+                    accountNum: customerToCredit.accountNum
+                });
+
+                await user.save();
 
 
                 // res.status(200).json({
