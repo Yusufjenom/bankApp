@@ -5,11 +5,13 @@ import { loginReducer } from '../../utils';
 
 function LoginUser() {
     const [state, dispatch] = useReducer(loginReducer, { email: "", password: "" });
-    const { loginResponse, handleLogin } = useLoginUser(state);
+    const { loginResponse, handleLogin } = useLoginUser();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await handleLogin()
+        console.log(state)
+        await handleLogin(state)
+        console.log(loginResponse)
         localStorage.setItem('userToken', JSON.stringify(loginResponse.data.token));
     };
     

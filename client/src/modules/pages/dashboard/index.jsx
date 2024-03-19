@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react';
+import AuthProvider from '../../auth/context/authContext';
+import { AuthContext } from '../../auth/context/authContext';
 
 function Dashboard() {
   const [user, setUser] = useState({});
-
+  const {currentUserLoggedIn} = useContext(AuthContext);
+  console.log(currentUserLoggedIn)
+  
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem('user')))
+    setUser(currentUserLoggedIn.data.loggedInUser)
   }, []);
 
 
   return (
-    <div>Dashboard
-      <h3>{user?.firstname}</h3>
-      <h3>{user?.lastname}</h3>
+    <div>
+      <h1>Dashboard</h1>
+      <h4>{user?.firstname}</h4>
+      <h4>{user?.lastname}</h4>
+      <h4>{user?.email}</h4>
+      <h4>{user?.accountNum}</h4>
+      <h4>{user?.accountBalance}</h4>
     </div>
   )
 }

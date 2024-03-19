@@ -17,4 +17,9 @@ async function verifyUser(req, res, next){
   }
 };
 
+
+// async function getCurrentUser(req, res, next){
+
+// }
+
 module.exports = {verifyUser};

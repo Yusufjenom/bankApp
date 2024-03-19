@@ -27,7 +27,8 @@ export const getCurrentUser = async () => {
         headers:{
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("userToken"))}`
         }
-     })
+     });
+     console.log(response)
      return response;
     }
     catch(err){

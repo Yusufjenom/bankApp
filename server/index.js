@@ -19,7 +19,7 @@ const port = process.env.PORT || 8080;
 app.use(express.urlencoded({extended: true}));
 //app.use(helmet.crossOriginResourcePolicy({policy:"cross_origin"}))
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5175",
     credentials: true
 }))
 app.use(express.json());
