@@ -28,8 +28,10 @@ export const getCurrentUser = async () => {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("userToken"))}`
         }
      });
-     console.log(response)
-     return response;
+     console.log(response);
+     const result = await response.data.loggedInUser;
+     console.log(result);
+     return result;
     }
     catch(err){
         console.log(err.message)

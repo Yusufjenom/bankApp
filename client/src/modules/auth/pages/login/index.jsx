@@ -1,18 +1,26 @@
 import React, { useReducer } from 'react';
 import useLoginUser from '../../hooks/useLoginUser';
 import { loginReducer } from '../../utils';
+import {useNavigate} from 'react-router-dom'
 
 
 function LoginUser() {
     const [state, dispatch] = useReducer(loginReducer, { email: "", password: "" });
     const { loginResponse, handleLogin } = useLoginUser();
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(state)
-        await handleLogin(state)
+        const response = await handleLogin(state)
         console.log(loginResponse)
-        localStorage.setItem('userToken', JSON.stringify(loginResponse.data.token));
+        if(loginResponse.data.success){
+            localStorage.setItem('userToken', JSON.stringify(loginResponse.data.token));
+            console.log("hello world")
+            navigate('/dashboard')
+        }
+        
+        
     };
     
     return (

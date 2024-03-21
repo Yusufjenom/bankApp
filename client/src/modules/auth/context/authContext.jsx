@@ -1,14 +1,16 @@
 import React, {createContext} from 'react';
 import useGetCurrentUser from '../hooks/useGetCurrentUser';
+import { getCurrentUser } from '../api';
 
 export const AuthContext = createContext()
 
 function AuthProvider({children}) {
-  const {currentUserLoggedIn} = useGetCurrentUser();
+  const {currentUserLoggedIn, user} = useGetCurrentUser();
+
 
     
   return (
-    <AuthContext.Provider value={{currentUserLoggedIn}} >
+    <AuthContext.Provider value={{currentUserLoggedIn, user}} >
      {children}
     </AuthContext.Provider>
   )

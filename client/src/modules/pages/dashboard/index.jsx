@@ -3,14 +3,18 @@ import AuthProvider from '../../auth/context/authContext';
 import { AuthContext } from '../../auth/context/authContext';
 
 function Dashboard() {
-  const [user, setUser] = useState({});
-  const {currentUserLoggedIn} = useContext(AuthContext);
+  const [userr, setUserr] = useState(null);
+  const {currentUserLoggedIn, user} = useContext(AuthContext);
   console.log(currentUserLoggedIn)
   
-  useEffect(() => {
-    setUser(currentUserLoggedIn.data.loggedInUser)
-  }, []);
-
+  // useEffect(() => {
+    
+  //     setUserr(currentUserLoggedIn.data?.loggedInUser)
+   
+  // }, []);
+ 
+  console.log(user)
+  
 
   return (
     <div>

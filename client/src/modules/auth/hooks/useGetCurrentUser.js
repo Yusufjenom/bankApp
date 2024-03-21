@@ -1,26 +1,27 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import { getCurrentUser } from '../api';
 
 function useGetCurrentUser() {
  const [currentUserLoggedIn, setCurrentUserLoggedIn] = useState({});
- const abortController = new AbortController()
-
+ const abortController = new AbortController();
+ 
  useEffect(() => {
    
     const fetchCurrentUser = async () => {
        const res = await getCurrentUser();
        setCurrentUserLoggedIn(res);
-       console.log(currentUserLoggedIn)
+        console.log(currentUserLoggedIn)
     }
-     
-    fetchCurrentUser()
-
+    fetchCurrentUser();
     return () => {
         abortController.abort();
     }
  }, []);
 
-  return {currentUserLoggedIn}
+ const user = useMemo(() => currentUserLoggedIn, [currentUserLoggedIn]);
+ console.log(user)
+
+  return {currentUserLoggedIn, user}
 }
 
 export default useGetCurrentUser

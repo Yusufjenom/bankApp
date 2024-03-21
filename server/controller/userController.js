@@ -85,7 +85,6 @@ const loginUser = CatchErrorFunc(async (req, res) => {
                 throw new HandleError(400, "invalid token", 400)
             }
 
-
         }
         else {
             throw new HandleError(process.env.WRONG_PASSWORD, 'invalid password', 400)
@@ -94,7 +93,7 @@ const loginUser = CatchErrorFunc(async (req, res) => {
     else {
         throw new HandleError(400, 'invalid email', 400)
     }
-})
+});
 
 
 const logoutUser = CatchErrorFunc(async (req, res) => {
@@ -250,8 +249,10 @@ const comfirmUserToCredit = CatchErrorFunc(async (req, res) => {
 
 const getCurrentUserFromClientSide = CatchErrorFunc(async (req, res) => {
     const payload = req.get('Authorization');
+    console.log(payload)
     const token = payload.split(' ')[1]
-    const vverifiedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const vverifiedToken = await jwt.verify(token, process.env.JWT_SECRET);
+    console.log(vverifiedToken)
     
     const loggedInUser = await UserModel.findById(vverifiedToken.id);
     res.status(200).json({
@@ -279,3 +280,4 @@ module.exports = {
     getCurrentUserFromClientSide
     //getSuccessReciept
 };
+
