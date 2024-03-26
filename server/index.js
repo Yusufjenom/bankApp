@@ -19,7 +19,7 @@ const port = process.env.PORT || 8080;
 app.use(express.urlencoded({extended: true}));
 //app.use(helmet.crossOriginResourcePolicy({policy:"cross_origin"}))
 app.use(cors({
-    origin: "http://localhost:5176",
+    origin: "http://localhost:5175",
     credentials: true
 }))
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use(methodOverride('_method'));
 app.use('/api/v1', userRouter);
 app.use('/api/v2', adminRouter);
 
-
+rachael123
 app.use(session({
     secret: "secret",
     resave: false,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import AuthProvider from '../../auth/context/authContext';
 import { AuthContext } from '../../auth/context/authContext';
+import ApplicationLayout from '../layout';
 
 function Dashboard() {
   const [userr, setUserr] = useState(null);
@@ -17,14 +18,11 @@ function Dashboard() {
   
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h4>{user?.firstname}</h4>
-      <h4>{user?.lastname}</h4>
-      <h4>{user?.email}</h4>
-      <h4>{user?.accountNum}</h4>
-      <h4>{user?.accountBalance}</h4>
-    </div>
+    <>
+    <ApplicationLayout>
+
+    </ApplicationLayout> 
+    </>
   )
 }
 

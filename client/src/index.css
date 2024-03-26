@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.application_layout_container {
+    height: 100vh;
+    width: 100vw;
+    padding: .2rem;
+    background-color: #f2f3f4;
+    display: grid;
+    grid-template-columns: .3fr 1fr 1fr 1fr;
+    grid-template-rows: .3fr 1fr 1fr 1fr;
+    grid-template-areas:
+        "sidebar header header header"
+        "sidebar conten conten conten "
+        "sidebar conten conten conten "
+        "sidebar conten conten conten "
+    ;
+}
+
+.header {
+    grid-area: header;
+    background-color: #fff;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background-color: gray;
+}
+
+.content {
+    grid-area: conten;
+}
+
+.application_header_container {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.header_logo_container {
+    height: 100%;
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header_search_container {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header_profile_icons_container {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header_search_container input {
+    height: 70%;
+    width: 60%;
+    border-radius: .3rem;
+    background-color: #f2f3f4;
+    border: none;
+}
+
+
+
+.application_sidebar_container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+
+.first_sidebar_section {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 2rem;
+}
+
+
+
+.seconde_sidebar_section {
+    width: 100%;
+    height: 20%;
+}
+
+
+
+.third_sidebar_section {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
