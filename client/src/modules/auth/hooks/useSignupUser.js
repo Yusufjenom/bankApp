@@ -12,9 +12,6 @@ function useSignupUser() {
             localStorage.setItem('user', JSON.stringify(data.savedUser));
             return response
         }
-        
-        
-
     return { signUp, userResponse }
 }
 
