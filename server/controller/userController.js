@@ -161,6 +161,7 @@ const generatePin = CatchErrorFunc(async (req, res) => {
 });
 
 const creditCustomer = CatchErrorFunc(async (req, res) => {
+    console.log(req.body)
     const { amount, accountNum, pin } = req.body;
     const token = req.get('Authorization');
     const formattedToken = token.split(' ')[1]
@@ -267,7 +268,22 @@ const getCurrentUserFromClientSide = CatchErrorFunc(async (req, res) => {
         success: true,
         loggedInUser
     });
-})
+});
+
+
+const getUserByAccpountNum = CatchErrorFunc(async (req, res) => {
+    //console.log(req.body)
+    const {accountNum} = req.body;
+    const userDetails = await UserModel.findOne({accountNum});
+    //console.log(userDetails)
+    if(userDetails){
+        res.status(200).json({
+            userDetails
+        })
+    }else{
+        throw new HandleError("user not found")
+    }
+ })
 
 module.exports = {
     signupUser,
@@ -285,7 +301,8 @@ module.exports = {
     resetPin,
     getTransferForm,
     comfirmUserToCredit,
-    getCurrentUserFromClientSide
+    getCurrentUserFromClientSide,
+    getUserByAccpountNum
     //getSuccessReciept
 };
 

@@ -5,26 +5,32 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WindowIcon from '@mui/icons-material/Window';
 import SendIcon from '@mui/icons-material/Send';
+import useLogoutUser from '../../../auth/hooks/useLogoutUser';
+import { Link } from 'react-router-dom';
 
 function ApplicationSidebar() {
+  const { logout } = useLogoutUser();
   return (
     <div className='application_sidebar_container'>
 
-        <div className="first_sidebar_section">
-          <ElectricBoltIcon/>
-          <CreditCardIcon/>
-          <WindowIcon/>
-          <SendIcon/>
-        </div>
+      <div className="first_sidebar_section">
+        <ElectricBoltIcon />
+        <CreditCardIcon />
+        <WindowIcon />
 
-        <div className="seconde_sidebar_section">
+        <Link to="/transfer">
+          <SendIcon />
+        </Link>
+      </div>
 
-        </div>
+      <div className="seconde_sidebar_section">
 
-        <div className="third_sidebar_section">
-           <SettingsIcon/>
-           <LogoutIcon/>
-        </div>
+      </div>
+
+      <div className="third_sidebar_section">
+        <SettingsIcon />
+        <LogoutIcon onClick={logout} />
+      </div>
 
     </div>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {useState, useContext } from 'react';
 import AuthProvider from '../../auth/context/authContext';
 import { AuthContext } from '../../auth/context/authContext';
 import ApplicationLayout from '../layout';
@@ -9,7 +9,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function Dashboard() {
-  const [userr, setUserr] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const { currentUserLoggedIn, user } = useContext(AuthContext);
   console.log(currentUserLoggedIn)
@@ -20,7 +20,6 @@ function Dashboard() {
 
   console.log(user);
 
-
   return (
     <>
       <ApplicationLayout>
@@ -29,8 +28,8 @@ function Dashboard() {
           <div className='child_one'>
             <div className='child_one_one'>
               <CurrencyExchangeIcon />
-              <h3>{user.accountNum}</h3>
-              <p>{user.email}</p>
+              <h3>{user?.accountNum}</h3>
+              <p>{user?.email}</p>
             </div>
 
             <div className='child_one_two'>

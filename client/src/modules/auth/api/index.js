@@ -37,3 +37,31 @@ export const getCurrentUser = async () => {
         console.log(err.message)
     }
 };
+
+export const getUserByAccount = async (payload) => {
+    try{
+      const response = await axios.post(`${BASE_URL}/api/v1/get-user-by-account`, payload, {
+        withCredentials: true
+      });
+      const result = await response.data;
+      console.log(result);
+      return result
+    }
+    catch(err){
+        console.log(err.message)
+    }
+};
+
+
+export const transferFunds = async (payload) => {
+    try{
+     const response = await axios.put(`${BASE_URL}/api/v1/credit-customer`, payload, {
+        withCredentials: true
+     });
+     const result = await response.data;
+     return result;
+    }
+    catch(err){
+        console.log(err.message)
+    }
+}

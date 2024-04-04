@@ -5,6 +5,8 @@ import Dashboard from './modules/pages/dashboard';
 import GeneralErrorPage from './modules/pages/error';
 import Signup from './modules/auth/pages/signup';
 import LoginUser from './modules/auth/pages/login';
+import ProtectedRoutesProvvider from './modules/pages/contexts/ProtectedRoutes';
+import Transfers from './modules/pages/transfers';
 // import { AuthContext } from './modules/auth/context/authContext';
 // import AuthProvider from './modules/auth/context/authContext';
 
@@ -16,7 +18,7 @@ export const router = createBrowserRouter([
     },
     {
         path:"/dashboard",
-        element:<Dashboard/>
+        element: <ProtectedRoutesProvvider><Dashboard/></ProtectedRoutesProvvider>  
     },
     {
         path:"/signup",
@@ -25,6 +27,10 @@ export const router = createBrowserRouter([
     {
        path:"/login",
        element:<LoginUser/>
+    },
+    {
+       path:"/transfer",
+       element:<Transfers/>
     },
     {
         path:"*",

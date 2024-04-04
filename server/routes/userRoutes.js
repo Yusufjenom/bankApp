@@ -14,7 +14,8 @@ const {signupUser,
        resetPin,
        getTransferForm,
        comfirmUserToCredit,
-       getCurrentUserFromClientSide
+       getCurrentUserFromClientSide,
+       getUserByAccpountNum
      } = require('../controller/userController');
 const {verifyUser} = require('../middleware/authUser');
 
@@ -37,7 +38,9 @@ userRouter.put('/update-password/:id/:token', postUpdatedPassword);
 
 userRouter.get('/current-user', getCurrentUserFromClientSide);
 
-userRouter.use(verifyUser);
+userRouter.post('/get-user-by-account', getUserByAccpountNum);
+
+//userRouter.use(verifyUser);
 
 userRouter.get('/home',  homePage);
 
