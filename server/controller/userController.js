@@ -162,7 +162,11 @@ const generatePin = CatchErrorFunc(async (req, res) => {
 
 const creditCustomer = CatchErrorFunc(async (req, res) => {
     const { amount, accountNum, pin } = req.body;
-    const userId = await getCurrentUser(req)
+    const token = req.get('Authorization');
+    const formattedToken = token.split(' ')[1]
+    console.log(formattedToken)
+    const payload = await jwt.verify(formattedToken, process.env.JWT_SECRET);
+    const userId = payload.id
     const user = await UserModel.findById(userId);
     const customerToCredit = await UserModel.findOne({ accountNum });
     if (user.suspended) {
@@ -175,6 +179,7 @@ const creditCustomer = CatchErrorFunc(async (req, res) => {
             const recepientBalance = customerToCredit.accountBalance;
 
             if (senderBalance > amount) {
+
                 const newBalance = Number(amount) + Number(recepientBalance)
                 const newSenderBalance = Number(senderBalance) - Number(amount);
                 const updatedRecipientAccount = await UserModel.findOneAndUpdate({ accountNum }, {
@@ -199,7 +204,10 @@ const creditCustomer = CatchErrorFunc(async (req, res) => {
                 //     message: "Your transfer was successful",
                 //     updatedSenderAccount
                 // })
-                res.status(200).render('reciept.ejs', {amount, user, updatedRecipientAccount})
+                res.status(200).json({
+                    success: true,
+                    message: `the transfer of ${amount} to ${customerToCredit.firstname} was successfull` 
+                });
             } else {
                 throw new HandleError(400, "insuffient funds", 400)
             }

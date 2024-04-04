@@ -106,8 +106,6 @@
     height: 20%;
 }
 
-
-
 .third_sidebar_section {
     width: 100%;
     height: 20%;
@@ -116,4 +114,98 @@
     align-items: center;
     justify-content: center;
     gap: 2rem;
+}
+
+.dashboard_main_content_parent{
+ width: 100%;
+ height: 100%;
+ padding: .4rem;
+ display: grid;
+ grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+ grid-template-rows: 1fr 1fr 1fr;
+ grid-template-areas: 
+ "one two three four five"
+ "six six seven seven five"
+ "eight eight eight eight nine"
+ ;
+ gap: .8rem;
+}
+
+.child_one{
+    grid-area: one;
+    background-color: #fff;
+    border-radius: .4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.child_one_one{
+    height: 50%;
+    width: 100%;
+    background-color: bisque;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.child_one_two{
+    height: 50%;
+    width: 100%;
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: .4rem;
+}
+
+
+.child_two{
+    grid-area: two;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_three{
+    grid-area: three;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_four{
+    grid-area: four;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_five{
+    grid-area: five;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_six{
+    grid-area: six;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_seven{
+    grid-area: seven;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_eight{
+    grid-area: eight;
+    background-color: #fff;
+    border-radius: .4rem;
+}
+
+.child_nine{
+    grid-area: nine;
+    background-color: #fff;
+    border-radius: .4rem;
 }
