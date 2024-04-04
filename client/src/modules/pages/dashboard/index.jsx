@@ -18,7 +18,7 @@ function Dashboard() {
     setOpen(!open);
   }
 
-  console.log(user)
+  console.log(user);
 
 
   return (
