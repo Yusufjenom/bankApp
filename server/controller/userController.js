@@ -258,11 +258,8 @@ const comfirmUserToCredit = CatchErrorFunc(async (req, res) => {
 
 const getCurrentUserFromClientSide = CatchErrorFunc(async (req, res) => {
     const payload = req.get('Authorization');
-    console.log(payload)
     const token = payload.split(' ')[1]
     const vverifiedToken = await jwt.verify(token, process.env.JWT_SECRET);
-    console.log(vverifiedToken)
-    
     const loggedInUser = await UserModel.findById(vverifiedToken.id);
     res.status(200).json({
         success: true,
