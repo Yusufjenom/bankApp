@@ -35,7 +35,7 @@ function Dashboard() {
             <div className='child_one_two'>
               {
                 open ? (
-                  <h1><AttachMoneyIcon />{user.accountBalance}</h1>
+                  <h1><AttachMoneyIcon />{user?.accountBalance}</h1>
                 )
                   : (
                     <h1><AttachMoneyIcon /> ******</h1>
