@@ -1,12 +1,10 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-async function getCurrentUser(req){
-    const userToken = req.cookies.userToken
-    const verifiedToken = await jwt.verify(userToken, process.env.JWT_SECRET);
-    return verifiedToken.id
+async function getCurrentUser(req) {
+  const userToken = req.cookies.userToken;
+  console.log(req.cookies.userAuthTokenuserAuthToken);
+  const verifiedToken = await jwt.verify(userToken, process.env.JWT_SECRET);
+  return verifiedToken.id;
 }
-    
 
-
-module.exports = {getCurrentUser};
-
+module.exports = { getCurrentUser };
