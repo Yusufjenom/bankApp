@@ -19,11 +19,12 @@ function ErrorHandler(error, req, res, next){
         })
       }
    }
-
+   console.log(error.message)
    return res.status(400).json({
     success: false,
     error: error.message
 })
+
 };
 
 module.exports = {ErrorHandler}
