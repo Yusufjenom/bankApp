@@ -32,7 +32,7 @@ function Transfers() {
         const getUserDetailsFromAccountSubmitted = async () => {
             if (state.accountNum) {
                 const user = await getUserByAccount({accountNum:state.accountNum})
-                console.log(user)
+                //console.log(user)
                 setAccountOwner(user.userDetails.firstname)
                 setAccountOwner2(user.userDetails.lastname)
             }
